@@ -1,0 +1,54 @@
+name: Generate PDFs and Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  generate-pdfs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreoffice texlive
+
+      - name: Convert PPTX to PDF
+        run: |
+          libreoffice --headless --convert-to pdf src/presentations/*.pptx --outdir output/pdf
+
+      - name: Convert TEX to PDF
+        run: |
+          pdflatex -output-directory=output/pdf src/tps/*.tex
+
+  increment-version:
+    runs-on: ubuntu-latest
+    needs: generate-pdfs
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Increment version
+        run: |
+          chmod +x scripts/increment_version.sh
+          ./scripts/increment_version.sh
+
+      - name: Commit version change
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "chore: increment version"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.increment-version.outputs.new_version }}
+          files: output/pdf/*.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
