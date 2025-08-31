@@ -1,10 +1,10 @@
 name: Generate PDFs and Release
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   generate-pdfs:
@@ -13,42 +13,110 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set up directories
+        run: |
+          mkdir -p output/pdf
+          mkdir -p output/pdf/presentations
+          mkdir -p output/pdf/tps
+
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libreoffice texlive
+          sudo apt-get install -y libreoffice
+          sudo apt-get install -y texlive-full
+          sudo apt-get install -y texlive-lang-french
+
+      - name: Find PPTX files
+        id: find_pptx
+        run: |
+          echo "::set-output name=files::$(find . -type f -name "*.pptx" | tr '\n' ' ')"
 
       - name: Convert PPTX to PDF
+        if: steps.find_pptx.outputs.files != ''
         run: |
-          libreoffice --headless --convert-to pdf src/presentations/*.pptx --outdir output/pdf
+          for file in ${{ steps.find_pptx.outputs.files }}; do
+            filename=$(basename "$file" .pptx)
+            directory=$(dirname "$file")
+            echo "Converting $file to PDF"
+            libreoffice --headless --convert-to pdf "$file" --outdir output/pdf/presentations
+          done
+
+      - name: Find TEX files
+        id: find_tex
+        run: |
+          echo "::set-output name=files::$(find . -type f -name "*.tex" | tr '\n' ' ')"
 
       - name: Convert TEX to PDF
+        if: steps.find_tex.outputs.files != ''
         run: |
-          pdflatex -output-directory=output/pdf src/tps/*.tex
+          for file in ${{ steps.find_tex.outputs.files }}; do
+            filename=$(basename "$file" .tex)
+            directory=$(dirname "$file")
+            echo "Converting $file to PDF"
+            cd "$directory" && pdflatex -interaction=nonstopmode "$filename.tex"
+            mv "$filename.pdf" "$GITHUB_WORKSPACE/output/pdf/tps/"
+          done
 
-  increment-version:
-    runs-on: ubuntu-latest
+      - name: Upload PDF artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: pdf-files
+          path: output/pdf/**/*.pdf
+
+  create-release:
     needs: generate-pdfs
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
+      - name: Download PDF artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: pdf-files
+          path: output/pdf
+
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "::set-output name=tag::$latest_tag"
+          
       - name: Increment version
+        id: increment_version
         run: |
-          chmod +x scripts/increment_version.sh
-          ./scripts/increment_version.sh
-
-      - name: Commit version change
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -m "chore: increment version"
+          latest_tag=${{ steps.get_latest_tag.outputs.tag }}
+          major=$(echo $latest_tag | cut -d. -f1 | tr -d 'v')
+          minor=$(echo $latest_tag | cut -d. -f2)
+          patch=$(echo $latest_tag | cut -d. -f3)
+          
+          # Increment patch version
+          new_patch=$((patch + 1))
+          new_version="v$major.$minor.$new_patch"
+          
+          echo "::set-output name=new_version::$new_version"
+          echo "New version: $new_version"
 
       - name: Create Release
+        id: create_release
         uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.increment-version.outputs.new_version }}
-          files: output/pdf/*.pdf
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.increment_version.outputs.new_version }}
+          name: Release ${{ steps.increment_version.outputs.new_version }}
+          body: |
+            # Automatic Release ${{ steps.increment_version.outputs.new_version }}
+            
+            Generated PDFs for all LaTeX documents and presentations
+            
+            ## Documents
+            - [List of PDF documents]
+            
+            ## Presentations
+            - [List of PDF presentations]
+          draft: false
+          files: |
+            output/pdf/**/*.pdf
