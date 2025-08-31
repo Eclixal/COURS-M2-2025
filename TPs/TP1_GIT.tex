@@ -1,0 +1,148 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{M2 MIASHS}
+\fancyfoot[R]{\thepage}
+
+\title{Travaux Pratiques \\ Master Informatique}
+\author{Alexandre JOUSSET}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+
+Git est un outil incontournable dans le développement logiciel collaboratif.  
+Ce TP vous guidera à travers les étapes essentielles mais aussi avancées, afin de maîtriser non seulement les commandes de base mais aussi les stratégies de travail collaboratif et de gestion de versions à l'échelle professionnelle.
+
+\section*{Objectifs}
+
+\begin{itemize}
+    \item Configurer et utiliser Git dans un environnement de développement collaboratif.
+    \item Maîtriser les commandes de base et avancées de Git.
+    \item Gérer efficacement l’historique et les branches d’un projet.
+    \item Savoir résoudre des conflits complexes.
+    \item Adopter les bonnes pratiques de gestion de version.
+\end{itemize}
+
+\section*{Matériel requis}
+
+\begin{itemize} 
+    \item Ordinateur portable avec Git installé.
+    \item Accès à Internet et à un compte GitHub.
+    \item Éditeur de texte (VSCode, etc.).
+    \item Connaissances de base en ligne de commande.
+\end{itemize}
+
+\section*{Consignes générales}
+
+\begin{itemize}
+    \item Travaillez en binôme ou seul.
+    \item Utilisez des messages de commit clairs et concis.
+    \item Documentez vos étapes dans un rapport final.
+    \item Respectez la structure de branches imposée.
+\end{itemize}
+
+\section*{Projet fil rouge}
+
+Vous allez développer en groupe une petite application (au choix : script Python, mini-site HTML/CSS, etc.).  
+Le projet sera versionné avec Git, et chaque fonctionnalité sera développée dans une branche dédiée.  
+Vous devrez simuler plusieurs situations réelles : conflits, intégrations, réorganisations d’historique.
+
+\section*{Exercices}
+
+\subsection*{Exercice 1 : Configuration de Git}
+
+Configurez votre identité Git et vérifiez vos paramètres :
+\begin{lstlisting}[language=bash]
+git config --global user.name "prenom nom"
+git config --global user.email 'prenom.nom@etu.univ.fr'
+git config --list
+\end{lstlisting}
+Question : Pourquoi est-il important que l’email Git soit le même que celui utilisé sur GitHub ?
+
+\subsection*{Exercice 2 : Création et structuration du dépôt}
+
+\begin{enumerate}
+    \item Initialisez un dépôt Git local.
+    \item Ajoutez un fichier \texttt{README.md} et un fichier \texttt{.gitignore} (ignorez par exemple les fichiers temporaires, logs, etc.).
+    \item Faites un premier commit.
+\end{enumerate}
+
+\subsection*{Exercice 3 : Gestion des fichiers et commits}
+
+\begin{itemize}
+    \item Ajoutez et modifiez plusieurs fichiers.
+    \item Faites des commits à chaque étape significative.
+    \item Utilisez \texttt{git diff} pour voir les changements avant un commit.
+    \item Expérimentez \texttt{git restore} pour annuler une modification non commitée.
+\end{itemize}
+
+\subsection*{Exercice 4 : Branches et fusions}
+
+\begin{itemize}
+    \item Créez une branche \texttt{feature/ajout-fonction}.
+    \item Développez une fonctionnalité sur cette branche.
+    \item Fusionnez-la dans \texttt{main} en utilisant \texttt{git merge}.
+    \item Simulez un conflit sur deux fichiers et résolvez-le.
+\end{itemize}
+
+\subsection*{Exercice 5 : Historique avancé}
+
+\begin{itemize}
+    \item Créez une branche \texttt{experiment}.
+    \item Ajoutez plusieurs commits.
+    \item Utilisez \texttt{git rebase} pour rejouer vos commits sur \texttt{main}.
+    \item Créez un tag \texttt{v1.0} sur une version stable.
+\end{itemize}
+
+\subsection*{Exercice 6 : Travail collaboratif}
+
+\begin{itemize}
+    \item Ajoutez un dépôt distant.
+    \item Poussez vos modifications.
+    \item Récupérez celles d’un camarade avec \texttt{git pull}.
+    \item Résolvez les conflits éventuels.
+\end{itemize}
+
+\subsection*{Exercice 7 : Gestion temporaire et bonnes pratiques}
+
+\begin{itemize}
+    \item Expérimentez \texttt{git stash} pour mettre de côté des changements en cours.
+    \item Restaurez-les avec \texttt{git stash pop}.
+    \item Réfléchissez à une stratégie de nommage des branches.
+\end{itemize}
+
+\section*{Questions de réflexion}
+
+\begin{enumerate}
+    \item Quels sont les avantages d’un rebase par rapport à un merge ?
+    \item Dans quel cas utiliseriez-vous un tag ?
+    \item Comment éviter les conflits de fusion dans un grand projet ?
+    \item Pourquoi est-il important d’avoir un fichier \texttt{.gitignore} bien configuré ?
+\end{enumerate}
+
+\section*{Conclusion}
+
+À l’issue de ce TP, vous devez être capables de gérer un projet de développement collaboratif en utilisant Git, de structurer un historique de commits clair et de résoudre des situations complexes rencontrées en entreprise.
+
+\end{document}
