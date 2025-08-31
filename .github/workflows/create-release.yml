@@ -58,7 +58,7 @@ jobs:
           done
 
       - name: Upload PDF artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: pdf-files
           path: output/pdf/**/*.pdf
