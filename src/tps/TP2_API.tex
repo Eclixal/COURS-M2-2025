@@ -1,0 +1,138 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!50!black},
+    breaklines=true,
+    showstringspaces=false
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{M2 MIASHS}
+\fancyfoot[R]{\thepage}
+
+\title{Travaux Pratiques \\ API Géographique avec Flask}
+\author{Alexandre JOUSSET}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+
+Flask est un micro-framework Python permettant de créer rapidement des APIs et applications web.  
+Dans ce TP, vous allez construire pas à pas une \textbf{API géographique} capable de :
+\begin{itemize}
+    \item Retourner un message de bienvenue.
+    \item Obtenir les coordonnées GPS d’une ville via OpenStreetMap.
+    \item Calculer la distance entre deux villes avec OpenRouteService.
+    \item (Bonus) Conserver l’historique des recherches.
+\end{itemize}
+
+\section*{Objectif}
+
+\textbf{À la fin du TP}, vous aurez développé une API REST complète en Flask, intégrant des données externes et appliquant les bonnes pratiques de structuration et de documentation.
+
+\section*{Matériel requis}
+
+\begin{itemize}
+    \item Python 3 installé.
+    \item Bibliothèques : \texttt{flask}, \texttt{requests}.
+    \item Un éditeur de code (VSCode, PyCharm, etc.).
+\end{itemize}
+
+\section*{Consignes générales}
+
+\begin{itemize}
+    \item Travaillez en binôme ou seul.
+    \item Testez vos endpoints avec \texttt{curl}, Postman ou un navigateur.
+    \item Gardez un code clair et commenté.
+\end{itemize}
+
+\section*{Exercices}
+
+\subsection*{Exercice 1 : Installation et Hello World}
+
+\begin{enumerate}
+    \item Créez un dossier \texttt{api-geo}.
+    \item Installez Flask.
+    \item Créez un fichier \texttt{app.py} avec un endpoint \texttt{/} qui retourne un message de bienvenue.
+    \item Lancez le serveur et testez l’URL dans un navigateur.
+\end{enumerate}
+
+\textbf{Question :} Pourquoi le mode \texttt{debug=True} est-il utile pendant le développement ?
+
+\subsection*{Exercice 2 : Coordonnées d’une ville}
+
+\begin{enumerate}
+    \item Installez la bibliothèque \texttt{requests}.
+    \item Ajoutez un endpoint \texttt{/coords/<city>} qui utilise l’API Nominatim d’OpenStreetMap pour retourner la latitude et la longitude de la ville passée en paramètre.
+    \item Testez avec plusieurs villes (\texttt{/coords/Paris}, \texttt{/coords/Londres}, etc.).
+\end{enumerate}
+
+\textbf{Question :} Pourquoi faut-il préciser \texttt{format=json} dans la requête à Nominatim ?
+
+\subsection*{Exercice 3 : Calculer une distance entre deux villes}
+
+\begin{enumerate}
+    \item Créez un compte sur \url{https://openrouteservice.org/} et récupérez une clé API gratuite.
+    \item Créez un endpoint \texttt{/distance} qui prend en paramètres GET \texttt{from} et \texttt{to}.
+    \item Utilisez Nominatim pour récupérer les coordonnées des deux villes.
+    \item Utilisez OpenRouteService pour calculer la distance routière entre elles.
+    \item Retournez la distance en kilomètres dans la réponse JSON.
+\end{enumerate}
+
+\textbf{Question :} Pourquoi est-il important de limiter le nombre d’appels ?
+
+\subsection*{Exercice 4 : Améliorer la structure}
+
+\begin{itemize}
+    \item Déplacez la fonction qui récupère les coordonnées dans un fichier \texttt{utils.py}.
+    \item Importez-la dans \texttt{app.py} pour éviter de répéter le code.
+\end{itemize}
+
+\textbf{Question :} Pourquoi est-il important de factoriser le code ?
+
+\subsection*{Exercice 5 (Bonus) : Historique des recherches}
+
+\begin{enumerate}
+    \item Ajoutez une structure (liste ou autre) pour stocker chaque appel à \texttt{/distance} (ville de départ, ville d’arrivée, distance).
+    \item Créez un endpoint \texttt{/history} qui retourne cet historique au format JSON.
+    \item (Optionnel) Permettez de vider l’historique via un endpoint \texttt{DELETE}.
+\end{enumerate}
+
+\textbf{Question :} Comment rendre cet historique persistant même après redémarrage du serveur ?
+
+\section*{Questions de réflexion}
+
+\begin{enumerate}
+    \item Quels sont les avantages de Flask par rapport à un framework plus lourd comme Django pour ce type de projet ?
+    \item Quelles bonnes pratiques appliquer pour nommer et documenter ses endpoints ?
+    \item Pourquoi limiter le nombre d’appels à des APIs externes ?
+    \item Comment sécuriser une clé API dans un projet collaboratif ?
+\end{enumerate}
+
+\section*{Livrables}
+\begin{itemize}
+    \item Le code source complet de l’API.
+    \item Un fichier \texttt{README.md} expliquant comment installer et utiliser l’API.
+    \item Les réponses aux questions posées dans chaque exercice.
+    \item La documentation des endpoints.
+\end{itemize}
+
+\section*{Date de rendu}
+Le TP doit être rendu avant le \textbf{17 septembre 2025} à 18h.
+
+\end{document}
