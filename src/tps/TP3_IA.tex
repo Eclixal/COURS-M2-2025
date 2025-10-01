@@ -1,0 +1,128 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{textcomp} 
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!50!black},
+    breaklines=true,
+    showstringspaces=false
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{M2 MIASHS}
+\fancyfoot[R]{\thepage}
+
+\title{Travaux Pratiques - Systemes de Recommandation Hybride, Classification (CNN) et Expressions Regulieres}
+\author{Alexandre JOUSSET}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+Ce TP propose trois parties pour découvrir de manière pratique :  
+\begin{itemize}
+\item Les systèmes de recommandation simples,
+\item La classification d'images avec un CNN basique,
+\item L'utilisation d'expressions régulières pour extraire des informations.
+\end{itemize}
+
+\section*{Objectifs généraux}
+\begin{itemize}
+\item Découvrir les méthodes de recommandation collaborative et basée sur le contenu.
+\item Comprendre la construction et l'entraînement d'un CNN simple.
+\item Pratiquer des regex pour extraire emails, téléphones, dates et URLs.
+\end{itemize}
+
+\section*{Matériel requis}
+\begin{itemize}
+\item Python 3.8+, Jupyter/Colab.
+\item Bibliothèques : pandas, numpy, scikit-learn, surprise, tensorflow/keras, re.
+\item Dataset : MovieLens 100k et Fashion-MNIST (inclus dans Keras).
+\end{itemize}
+
+\section*{Partie A : Recommandation simplifiée}
+\subsection*{But}
+Créer un système de recommandation simple combinant filtrage collaboratif et contenu.
+
+\subsection*{Exercices}
+\begin{enumerate}
+\item Charger MovieLens 100k et créer \texttt{df\_ratings} et \texttt{movies\_df}.
+\item Implémenter un filtrage collaboratif basique avec Surprise (user-based ou item-based).
+\item Construire une recommandation simple basée sur les genres préférés d'un utilisateur.
+\item Combiner les deux scores pour afficher les 5 meilleurs films recommandés.
+\end{enumerate}
+
+\subsection*{Questions de réflexion}
+\begin{itemize}
+\item Quels avantages/inconvénients des approches collaboratives et contenu ?
+\item Pourquoi combiner les deux approches ?
+\end{itemize}
+
+\section*{Partie B : Classification d'images (CNN simplifié)}
+\subsection*{But}
+Classer les images du jeu Fashion-MNIST avec un CNN simple.
+
+\subsection*{Exercices}
+\begin{enumerate}
+\item Charger et normaliser les images.
+\item Créer un CNN simple (Conv -> Pool -> Dense).
+\item Compiler et entraîner le modèle sur un petit nombre d'époques.
+\item Évaluer accuracy sur le test et afficher quelques prédictions correctes/incorrectes.
+\end{enumerate}
+
+\subsection*{Questions de réflexion}
+\begin{itemize}
+\item Pourquoi normaliser les images ?
+\item Comment savoir si le modèle apprend correctement ?
+\end{itemize}
+
+\section*{Partie C : Expressions régulières simples}
+\subsection*{But}
+Extraire emails, téléphones et URLs depuis un fichier texte.
+
+\subsection*{Exercices}
+\begin{enumerate}
+\item Créer un fichier \texttt{sample\_text.txt} avec quelques emails, téléphones et URLs.
+\item Écrire des regex simples pour extraire ces informations.
+\item Tester vos regex avec des exemples pour vérifier qu'elles fonctionnent.
+\end{enumerate}
+
+\subsection*{Questions de réflexion}
+\begin{itemize}
+\item Quelles limites ont les regex pour valider des emails et URLs ?
+\end{itemize}
+
+\section*{Livrables}
+\begin{itemize}
+\item Notebooks pour chaque partie.
+\item README simple expliquant comment exécuter le code.
+\item Pour la partie recommandation : au moins 2 exemples d'utilisateurs.
+\item Pour le CNN : afficher courbes et quelques prédictions.
+\item Pour les regex : fichier texte et tests.
+\end{itemize}
+
+
+\section*{Date de rendu}
+Le TP doit etre rendu avant le \textbf{8 octobre 2025} a 20h00.
+
+\section*{Ressources et aides}
+\begin{itemize}
+\item MovieLens : \url{https://grouplens.org/datasets/movielens/} (utiliser la version 100k pour le TP si prefere)
+\item Keras / TensorFlow documentation pour Fashion-MNIST.
+\item Tutoriels sur Surprise (collaborative filtering) et sur TF-IDF / TfidfVectorizer.
+\end{itemize}
+
+\end{document}
