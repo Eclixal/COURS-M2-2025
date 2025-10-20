@@ -1,0 +1,243 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[french]{babel}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{textcomp}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!50!black},
+    breaklines=true,
+    showstringspaces=false
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{M2 MIASHS}
+\fancyfoot[R]{\thepage}
+
+\title{Travaux Pratiques 4 - Automatisation et Tests avec Playwright}
+\author{Alexandre JOUSSET}
+\date{20 octobre 2025}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+Ce TP vous propose une approche pratique de l’automatisation de tests web avec \textbf{Playwright}, un outil moderne développé par Microsoft. Vous apprendrez à configurer un projet, interagir avec des éléments web, utiliser le \textit{Page Object Model}, simuler des scénarios complexes.
+
+\section*{Objectifs}
+\begin{itemize}
+\item Maîtriser les bases de Playwright (installation, configuration, exécution)
+\item Manipuler des locators et interactions utilisateur
+\item Écrire des tests fiables avec assertions et debugging
+\item Structurer son projet selon le modèle Page Object Model
+\item Découvrir le mocking réseau et l’intégration CI/CD
+\end{itemize}
+
+\section*{Matériel requis}
+\begin{itemize}
+\item Node.js (version 18 ou supérieure)
+\item Un éditeur de code (Visual Studio Code recommandé)
+\item Git pour versionner le projet
+\end{itemize}
+
+\newpage
+\section*{Partie A : Installation et premiers pas}
+\subsection*{But}
+Initialiser un projet Playwright et écrire un premier test simple.
+
+\subsection*{Exercices}
+\begin{enumerate}
+\item Créez un dossier pour le projet et initialisez Playwright :
+\begin{lstlisting}
+mkdir tp4-playwright && cd tp4-playwright
+npm init -y
+npm init playwright@latest
+\end{lstlisting}
+
+\item Explorez la structure générée :
+\begin{itemize}
+\item \texttt{playwright.config.ts} : configuration globale
+\item \texttt{tests/} : répertoire contenant les fichiers de tests
+\item \texttt{package.json} : dépendances du projet
+\end{itemize}
+
+\item Créez un premier test simple :
+\begin{lstlisting}
+// tests/homepage.spec.ts
+import { test, expect } from '@playwright/test';
+
+test('page a le bon titre', async ({ page }) => {
+
+});
+\end{lstlisting}
+
+\item Exécutez le test sur différents navigateurs :
+\begin{lstlisting}
+npx playwright test --project=chromium
+npx playwright test --project=firefox
+npx playwright test --project=webkit
+\end{lstlisting}
+\end{enumerate}
+
+\subsection*{Questions de réflexion}
+\begin{itemize}
+\item Pourquoi tester sur plusieurs navigateurs est-il important ?
+\item Comment Playwright gère-t-il automatiquement les temps d’attente entre actions ?
+\end{itemize}
+
+\newpage
+\section*{Partie B : Interactions complexes et assertions avancées}
+\subsection*{But}
+Explorer des scénarios réalistes utilisateur : formulaires multi-étapes, popups, frames, et assertions conditionnelles. Les étudiants devront écrire leurs propres tests Playwright à partir des consignes.
+
+\subsection*{Exercices}
+\begin{enumerate}
+\item \textbf{Formulaire multi-étapes}  
+Vous devez automatiser la soumission d’un formulaire sur un site de démonstration. Le formulaire contient plusieurs champs obligatoires et des boutons \textit{Next} entre les étapes.  
+\textbf{À faire :}  
+\begin{itemize}
+\item Remplir tous les champs obligatoires
+\item Passer d’une étape à l’autre
+\item Soumettre le formulaire
+\item Vérifier l’apparition d’un message de confirmation
+\end{itemize}
+
+\item \textbf{Popup JavaScript}  
+Certains sites affichent des alertes ou confirmations via JavaScript.  
+\textbf{À faire :}  
+\begin{itemize}
+\item Cliquer sur un bouton déclenchant une alerte
+\item Accepter ou rejeter l’alerte selon le scénario
+\item Vérifier le texte affiché sur la page après l’alerte
+\end{itemize}
+
+\item \textbf{Interaction avec une iframe}  
+Certains contenus sont intégrés dans des \textit{frames} ou \textit{iframes}.  
+\textbf{À faire :}  
+\begin{itemize}
+\item Identifier la frame
+\item Interagir avec un élément à l’intérieur (ex: remplir un champ ou cliquer sur un bouton)
+\item Vérifier que l’action a bien été effectuée
+\end{itemize}
+
+\item \textbf{Assertions dynamiques et éléments conditionnels}  
+Certains éléments peuvent apparaître ou disparaître dynamiquement après une action.  
+\textbf{À faire :}  
+\begin{itemize}
+\item Cliquer sur un bouton qui modifie la présence d’un élément
+\item Vérifier que l’élément a disparu ou réapparu
+\item Vérifier le message affiché après l’action
+\end{itemize}
+\end{enumerate}
+
+\subsection*{Questions de réflexion}
+\begin{itemize}
+\item Comment gérer les éléments qui apparaissent ou disparaissent dynamiquement ?
+\item Quand utiliser une assertion stricte (\texttt{toHaveText}) ou partielle (\texttt{toContainText}) ?
+\item Quels pièges pouvez-vous rencontrer avec les frames et comment les éviter ?
+\item Comment rendre vos tests stables malgré des animations ou temps de chargement variables ?
+\end{itemize}
+
+---
+
+\newpage
+\section*{Partie C : Tests avancés, Page Object Model et Mock API}
+\subsection*{But}
+Structurer le projet avec le \textbf{Page Object Model}, créer des tests paramétrés et simuler des réponses réseau via mocking pour tester des scénarios complexes.
+
+\subsection*{Exercices}
+\begin{enumerate}
+\item \textbf{Page Object Model}  
+Vous devez créer une classe représentant la page de connexion d’un site de démonstration.  
+\textbf{À faire :}  
+\begin{itemize}
+\item Identifier les champs de saisie et boutons importants
+\item Créer des méthodes pour naviguer vers la page et se connecter
+\item Ajouter des méthodes pour récupérer des messages d’erreur ou de succès
+\end{itemize}
+
+\item \textbf{Tests paramétrés}  
+Vous devez écrire un test qui vérifie plusieurs combinaisons de nom d’utilisateur et mot de passe (correct et incorrect).  
+\textbf{À faire :}  
+\begin{itemize}
+\item Paramétrer vos tests pour chaque scénario
+\item Vérifier les messages d’erreur ou de succès correspondants
+\item Vérifier l’URL après la connexion
+\end{itemize}
+
+\item \textbf{Mocking / Interception réseau}  
+Certains tests nécessitent de simuler des réponses d’API pour tester des comportements précis.  
+\textbf{À faire :}  
+\begin{itemize}
+\item Intercepter une requête réseau vers une API
+\item Fournir une réponse simulée
+\item Vérifier que les données mockées sont affichées correctement sur la page
+\item Ajouter un test qui vérifie les modifications d’éléments après la réponse
+\end{itemize}
+\end{enumerate}
+
+\subsection*{Questions de réflexion}
+\begin{itemize}
+\item Quels sont les avantages du Page Object Model dans un projet de tests complexe ?
+\item Comment les tests paramétrés améliorent-ils la couverture fonctionnelle ?
+\item Pourquoi et quand utiliser le mocking d’API dans un projet réel ?
+\item Comment vérifier que le comportement de l’application est correct même avec des données simulées ?
+\end{itemize}
+
+
+\newpage
+\section*{Partie D : Debugging, Reporting et CI/CD (bonus)}
+\subsection*{But}
+Découvrir les outils de debugging et configurer les rapports de test.
+
+\subsection*{Exercices}
+\begin{enumerate}
+\item Capture d’écran et trace :
+\begin{lstlisting}
+// tests/debug.spec.ts
+import { test } from '@playwright/test';
+
+test('capture et trace', async ({ browser }) => {
+  
+});
+\end{lstlisting}
+
+\item Génération d’un rapport HTML
+
+\item Configuration GitHub Actions :
+
+\subsection*{Questions de réflexion}
+\begin{itemize}
+\item Comment analyser un fichier de trace avec Playwright ?
+\item Quels avantages la CI apporte-t-elle à la qualité logicielle ?
+\end{itemize}
+
+\section*{Livrables}
+\begin{itemize}
+\item Code source complet du projet
+\item Rapport HTML des tests exécutés
+\item Fichier PDF contenant vos réponses aux questions
+\item README expliquant comment exécuter les tests
+\end{itemize}
+
+\section*{Date de rendu}
+Le TP est à rendre avant le \textbf{6 novembre 2025 à 20h00}.
+
+\section*{Ressources utiles}
+\begin{itemize}
+\item Documentation officielle : \url{https://playwright.dev/docs/intro}
+\item Exemples : \url{https://github.com/microsoft/playwright/tree/main/examples}
+\item API Reference : \url{https://playwright.dev/docs/api/class-playwright}
+\end{itemize}
+
+\end{document}
